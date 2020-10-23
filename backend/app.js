@@ -17,7 +17,7 @@ const mongoose = require("mongoose");
 
 // load env variables and create .env.example file
 const dotenv_safe = require("dotenv-safe");
-dotenv_safe.config();
+dotenv_safe.config(); 
 
 // connecting to MongoDB
 mongoose.connect(
