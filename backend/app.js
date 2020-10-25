@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
+const cors = require("cors");
 const expressValidator = require("express-validator");
 
 // in order to parse incoming request bodies with req.body property
@@ -39,6 +40,7 @@ app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(expressValidator());
+app.use(cors());
 app.use("/api", testRoutes);
 app.use("/api", authRoutes);
 
