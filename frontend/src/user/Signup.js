@@ -3,18 +3,20 @@ import React, {Component} from 'react';
 
 class Signup extends Component {
     constructor(){
-        super()
-        this.state={
+        super();
+        this.state = {
             name: "",
             email: "",
             password: "",
-            error: ""
+            error: "",
+            open: false
             
-    }
+    };
 }
 
     handleChange = (name) => (event) => {
-        this.setState({ [name]: event.target.value })
+        this.setState({ error: ""});
+        this.setState({ [name]: event.target.value });
 
     };
 
@@ -25,24 +27,27 @@ class Signup extends Component {
         const user = {
             name,
             email,
-            password
+            password,
         };
 
-        this.signup(user)
-        .then(data => {
-            if(data.error) this.setState({error: data.error})
+            
+            
+
+        this.signup(user).then(data => {
+            if(data.error) this.setState({ error: data.error });
                 else this.setState({
                     error: "",
                     name: "",
                     email: "",
-                    password: ""
+                    password: "",
+                    open: true
                 });
-        })
+        });
 
     };
 
-    signup = (user) => {
-        return fetch("http://localhost:8080/signup", {
+    signup = user => {
+        return fetch("http://localhost:8080/api/signup", {
             method: "POST",
             headers: {
                 Accept: "application/json",
@@ -51,44 +56,56 @@ class Signup extends Component {
             body: JSON.stringify(user)
         })
         .then(response => {
-            return response.json()
+            return response.json();
         })
         .catch(err => console.log(err));
-    }
+    };
     
+    signupForm = (name, email, password) => (
+        <form>
+        <div className="form-group">
+            <label className="text-muted">Name</label>
+            <input onChange={this.handleChange("name")} 
+            type="text" className="form-control"
+            value={name}
+            />
+        </div>
+        <div className="form-group">
+            <label className="text-muted">Email</label>
+            <input onChange={this.handleChange("email")} 
+            type="email" className="form-control"
+            value={email}
+            />
+        </div>
 
+        <div className="form-group">
+            <label className="text-muted">Password</label>
+            <input onChange={this.handleChange("password")} 
+            type="password" className="form-control"
+            value={password}/>
+        </div>
+        <button onClick={this.clickSubmit} className="btn btn-raised btn-primary">
+            Submit
+        </button>
+    </form>
+    )
     render() {
-        const {name, email, password} = this.state
+        const {name, email, password, open } = this.state;
         return (
             <div className='container'>
                 <h2 className="mt-5 mb-b">Signup</h2>
-
-                <form>
-                    <div className="form-group">
-                        <label className="text-muted">Name</label>
-                        <input onChange={this.handleChange("name")} 
-                        type="text" className="form-control"
-                        value={name}
-                        />
+                
+                
+                <div 
+                    className="alert alert-info" 
+                    style={{ display: open ? "" : "none" }}
+                >
+                   New account is successfully created. Please Sign In.
+                    
                     </div>
-                    <div className="form-group">
-                        <label className="text-muted">Email</label>
-                        <input onChange={this.handleChange("email")} 
-                        type="email" className="form-control"
-                        value={email}
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label className="text-muted">Password</label>
-                        <input onChange={this.handleChange("password")} 
-                        type="password" className="form-control"
-                        value={password}/>
-                    </div>
-                    <button onClick={this.clickSubmit} className="btn btn-raised btn-primary">
-                        Submit
-                    </button>
-                </form>
+                     
+                     {this.signupForm(name, email, password)}
+            
             </div>
         );
     }
